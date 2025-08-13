@@ -23,9 +23,13 @@ class OmniTeleopNode(Node):
     def __init__(self):
         super().__init__('omni_teleop_continuous')
 
+        self.last_motor_commands = (0,0,0)
+
         self.pubA = self.create_publisher(String, '/motor_command_A', 10)
         self.pubB = self.create_publisher(String, '/motor_command_B', 10)
         self.pubC = self.create_publisher(String, '/motor_command_C', 10)
+
+        # self.stopped = True
 
         # Save terminal settings
         self.settings = termios.tcgetattr(sys.stdin)
@@ -63,6 +67,8 @@ class OmniTeleopNode(Node):
                     elif key == '\x03':  # Ctrl+C
                         break
 
+                    # self.stopped = False
+
                     # Calculate wheel speeds
                     # Calculate wheel speeds with rotation scaled
                     wA = vx - (vy / math.sqrt(3)) - (L * omega * ROT_SCALE)
@@ -73,11 +79,18 @@ class OmniTeleopNode(Node):
                     mB = int(wB * SPEED)
                     mC = int(wC * SPEED)
 
-                    self.send_motor_cmds(mA, mB, mC)
+
+                    if(self.last_motor_commands != (mA,mB,mC)):
+                        self.send_motor_cmds(mA, mB, mC)
+                        self.last_motor_commands = (mA,mB,mC)
 
                 else:
                     # No key pressed → stop motors
-                    self.send_motor_cmds(0, 0, 0)
+                    # if(not self.stopped):
+                    if(self.last_motor_commands != (0,0,0)):
+                        self.send_motor_cmds(0, 0, 0)
+                        self.last_motor_commands = (0,0,0)
+                        # self.stopped = True
 
                 time.sleep(0.001)
 
