@@ -84,7 +84,7 @@ Built with a **Kiwi drive mechanism**, this bot can travel in any direction on a
 
 ## 🚀 Setup & Usage
 
-### 4. Network Configuration
+### 1. Network Configuration
 
 * Setup a PC with Ubuntu 24.04 and ROS 2 Jazzy.
  
@@ -92,7 +92,7 @@ Built with a **Kiwi drive mechanism**, this bot can travel in any direction on a
   
 * Clone this repo to your PC and build ans_ws.
 
-### 4. Network Configuration
+### 2. Network Configuration
 
 * Connect **Raspberry Pi** and **PC** to the same WiFi.
 
@@ -109,7 +109,7 @@ Built with a **Kiwi drive mechanism**, this bot can travel in any direction on a
   # password: ans
   ```
 
-### 5. Run on Raspberry Pi
+### 3. Run on Raspberry Pi
 
 In separate terminals:
 
@@ -120,7 +120,7 @@ ros2 run bno055_driver bno055_node
 ros2 run encoder_publish encoder_publish
 ```
 
-### 6. Run on PC
+### 4. Run on PC
 
 In separate terminals:
 
@@ -130,7 +130,7 @@ ros2 run pos_calc pos_calc
 ros2 launch slam_toolbox online_async_launch.py
 ```
 
-### 7. Visualization
+### 5. Visualization
 
 ```bash
 rviz2
