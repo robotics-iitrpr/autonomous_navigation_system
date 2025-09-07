@@ -84,9 +84,13 @@ Built with a **Kiwi drive mechanism**, this bot can travel in any direction on a
 
 ## 🚀 Setup & Usage
 
-1. Setup a PC with Ubuntu 24.04 and ROS 2 Jazzy.
-2. Install slam_toolbox and Nav2 on the PC.
-3. Clone this repo to your PC and build ans_ws.
+### 4. Network Configuration
+
+* Setup a PC with Ubuntu 24.04 and ROS 2 Jazzy.
+ 
+* Install slam_toolbox and Nav2 on the PC.
+  
+* Clone this repo to your PC and build ans_ws.
 
 ### 4. Network Configuration
 
