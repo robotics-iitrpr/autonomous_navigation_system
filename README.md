@@ -16,7 +16,7 @@ Built with a **Kiwi drive mechanism**, this bot can travel in any direction on a
   * **3 × 12V geared DC motors with encoders**
   * **4-cell 14.8V battery** (motors power)
   * **Buck converter (14.8V → 5V)** (encoder + logic power)
-  * <img src="https://github.com/robotics-iitrpr/autonomous_navigation_system/blob/main/ANS%20Circuit%20Diagram.png" alt="Circuit Diagram" width="410" height="298"/>
+  <p align="center"><img src="https://github.com/robotics-iitrpr/autonomous_navigation_system/blob/main/ANS%20Circuit%20Diagram.png" alt="Circuit Diagram" width="410" height="298"/></p>
 
 * **Mechanics**
 
