@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module fritzingVersion="0.9.3b.04.19.5c895d327c44a3114e5fcc9d8260daf0cbb52806" icon="Mine.png">
+    <title>My Parts</title>
+    <instances>
+        <instance moduleIdRef="raspberry-pi-5_1" modelIndex="6256" path="C:/Users/hp/Documents/Fritzing/parts/user/raspberry-pi-5_1.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="usb-a_2707ba69f7810f2189c865d362276a76_3" modelIndex="6507" path="C:/Users/hp/Documents/Fritzing/parts/user/usb-a_2707ba69f7810f2189c865d362276a76_3.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="usb-micro-b_854684e06aacaae479fab76935c777ba_2" modelIndex="6515" path="C:/Users/hp/Documents/Fritzing/parts/user/usb-micro-b_854684e06aacaae479fab76935c777ba_2.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="BNO055" modelIndex="85410325" path="C:/Users/hp/Documents/Fritzing/parts/user/BNO055.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="prefix0000_997845bcacba6b3294d1791584db9cdf_7" modelIndex="85410634" path="C:/Users/hp/Documents/Fritzing/parts/user/prefix0000_997845bcacba6b3294d1791584db9cdf_7.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="lipoly5000_11.1v_sch_2f81baf3d895ea87e8cd344d8a6e4660_4" modelIndex="85410800" path="C:/Users/hp/Documents/Fritzing/parts/user/lipoly5000_11.1v_sch_2f81baf3d895ea87e8cd344d8a6e4660_4.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="MD30C_2" modelIndex="85411057" path="C:/Users/hp/Documents/Fritzing/parts/user/MD30C_2.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="RPlidar-A1M8_1" modelIndex="85412031" path="C:/Users/hp/Documents/Fritzing/parts/user/RPlidar-A1M8_1.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="LIDAR-Lite_9e97bcd3cf44a322803ec9abc8070459_16" modelIndex="85412036" path="C:/Users/hp/Documents/Fritzing/parts/user/LIDAR-Lite_9e97bcd3cf44a322803ec9abc8070459_16.fzp">
+            <views/>
+        </instance>
+    </instances>
+</module>
