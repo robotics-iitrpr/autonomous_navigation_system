@@ -78,7 +78,7 @@ class OdometryPublisher(Node):
         odom_msg = Odometry()
         odom_msg.header.stamp = self.get_clock().now().to_msg()
         odom_msg.header.frame_id = "odom"
-        odom_msg.child_frame_id = "base_link"
+        odom_msg.child_frame_id = "base_footprint"
 
         odom_msg.pose.pose.position.x = self.x
         odom_msg.pose.pose.position.y = self.y
@@ -97,11 +97,13 @@ class OdometryPublisher(Node):
         odom_msg.twist.twist.linear.y = Vy
         odom_msg.twist.twist.angular.z = 0.0  # optional
 
+        self.odom_pub.publish(odom_msg)
+
         # Broadcast the TF transform
         odom_tf = TransformStamped()
         odom_tf.header.stamp = self.get_clock().now().to_msg()
         odom_tf.header.frame_id = "odom"
-        odom_tf.child_frame_id = "base_link"
+        odom_tf.child_frame_id = "base_footprint"
         odom_tf.transform.translation.x = self.x
         odom_tf.transform.translation.y = self.y
         odom_tf.transform.translation.z = 0.0
@@ -111,13 +113,26 @@ class OdometryPublisher(Node):
 
 
 
-        self.odom_pub.publish(odom_msg)
+        
+
+        odom_tf = TransformStamped()
+        odom_tf.header.stamp = self.get_clock().now().to_msg()
+        odom_tf.header.frame_id = "base_footprint"
+        odom_tf.child_frame_id = "base_link"
+        odom_tf.transform.translation.x = 0.0
+        odom_tf.transform.translation.y = 0.0
+        odom_tf.transform.translation.z = 0.0
+        odom_tf.transform.rotation.x = 0.0
+        odom_tf.transform.rotation.y = 0.0
+        odom_tf.transform.rotation.z = 0.0
+        odom_tf.transform.rotation.w = 1.0
+        self.odom_broadcaster.sendTransform(odom_tf)
 
 
         # Create and send the transform
         static_tf = TransformStamped()
         static_tf.header.stamp = self.get_clock().now().to_msg()
-        static_tf.header.frame_id = 'base_link'
+        static_tf.header.frame_id = 'base_footprint'
         static_tf.child_frame_id = 'laser'
 
         # Translation (adjust for your robot)
@@ -137,10 +152,10 @@ class OdometryPublisher(Node):
         static_transformStamped = TransformStamped()
 
         static_transformStamped.header.stamp = self.get_clock().now().to_msg()
-        static_transformStamped.header.frame_id = 'base_link'      # parent frame
+        static_transformStamped.header.frame_id = 'base_footprint'      # parent frame
         static_transformStamped.child_frame_id = 'imu_link'        # child frame
 
-        # Set your imu_link pose relative to base_link here:
+        # Set your imu_link pose relative to base_footprint here:
         static_transformStamped.transform.translation.x = 0.0  # meters
         static_transformStamped.transform.translation.y = 0.0
         static_transformStamped.transform.translation.z = 0.0
