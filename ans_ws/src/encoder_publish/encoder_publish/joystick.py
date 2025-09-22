@@ -9,7 +9,7 @@ import time
 # Distance from robot center to wheel (cm)
 L = 13.6
 # Speed scaling
-SPEED = 20  # base motor command speed
+SPEED = 50  # base motor command speed
 ROT_SCALE = 0.1
 
 class OmniJoystick(Node):
