@@ -24,7 +24,6 @@ class OdometryPublisher(Node):
         self.x = 0.0
         self.y = 0.0
         self.yaw = 0.0  # from IMU
-        self.imu_angular_velocity_z = 0.0  # initialize variable
 
         self.create_subscription(Imu, '/imu/data', self.imu_callback, 10)
         self.create_subscription(Float64, '/rpmA', self.get_encoder_speedA, 10)
@@ -45,7 +44,6 @@ class OdometryPublisher(Node):
         _, _, self.yaw = tf_transformations.euler_from_quaternion([
             quat.x, quat.y, quat.z, quat.w
         ])
-        self.imu_angular_velocity_z = msg.angular_velocity.z
 
     def get_encoder_speedA(self,msg):
         rpm = max(min(msg.data, 500), -500)  # clamp RPM between -500 and 500
@@ -74,24 +72,13 @@ class OdometryPublisher(Node):
         w2 = self.w2
         w3 = self.w3
 
-        # Robot frame velocities (assuming wheels at 0°, 120°, 240°)
+        # Forward kinematics (robot frame)
         Vx = (2/3) * self.r * (w1 - 0.5 * w2 - 0.5 * w3)
         Vy = (1/math.sqrt(3)) * self.r * (w2 - w3)
-        omega = self.imu_angular_velocity_z
-
-        # If omega is significant, you might want to zero out Vx, Vy
-        if abs(omega) > 0.1:
-            Vx = 0.0
-            Vy = 0.0
 
         # Transform to world frame
         dx = (Vx * math.cos(self.yaw) - Vy * math.sin(self.yaw)) * dt
         dy = (Vx * math.sin(self.yaw) + Vy * math.cos(self.yaw)) * dt
-
-        # max_allowed_delta = 0.05  # meters per update (tune this!)
-        # if abs(dx) > max_allowed_delta or abs(dy) > max_allowed_delta:
-        #     self.get_logger().warn(f"Ignoring sudden jump in position: dx={dx:.3f}, dy={dy:.3f}")
-        #     return
 
         self.x += dx
         self.y += dy
@@ -102,8 +89,8 @@ class OdometryPublisher(Node):
         odom_msg.header.frame_id = "odom"
         odom_msg.child_frame_id = "base_footprint"
 
-        odom_msg.pose.pose.position.x = -self.x
-        odom_msg.pose.pose.position.y = -self.y
+        odom_msg.pose.pose.position.x = self.x
+        odom_msg.pose.pose.position.y = self.y
         
 
         q = tf_transformations.quaternion_from_euler(0, 0, self.yaw)
@@ -121,17 +108,20 @@ class OdometryPublisher(Node):
 
         self.odom_pub.publish(odom_msg)
 
-
         # Broadcast the TF transform
         odom_tf = TransformStamped()
         odom_tf.header.stamp = self.get_clock().now().to_msg()
         odom_tf.header.frame_id = "odom"
         odom_tf.child_frame_id = "base_footprint"
-        odom_tf.transform.translation.x = -self.x
-        odom_tf.transform.translation.y = -self.y
+        odom_tf.transform.translation.x = self.x
+        odom_tf.transform.translation.y = self.y
         odom_tf.transform.translation.z = 0.0
         odom_tf.transform.rotation = orientation
         self.odom_broadcaster.sendTransform(odom_tf)
+
+
+
+
         
 
         odom_tf = TransformStamped()

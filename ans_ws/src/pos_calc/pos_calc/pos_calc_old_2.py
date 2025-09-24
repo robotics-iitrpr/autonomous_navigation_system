@@ -88,11 +88,6 @@ class OdometryPublisher(Node):
         dx = (Vx * math.cos(self.yaw) - Vy * math.sin(self.yaw)) * dt
         dy = (Vx * math.sin(self.yaw) + Vy * math.cos(self.yaw)) * dt
 
-        # max_allowed_delta = 0.05  # meters per update (tune this!)
-        # if abs(dx) > max_allowed_delta or abs(dy) > max_allowed_delta:
-        #     self.get_logger().warn(f"Ignoring sudden jump in position: dx={dx:.3f}, dy={dy:.3f}")
-        #     return
-
         self.x += dx
         self.y += dy
 
