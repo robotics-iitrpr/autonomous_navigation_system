@@ -26,6 +26,7 @@ setup(
             'forward = encoder_publish.forward:main',
             'backward = encoder_publish.backward:main',
             'omni_teleop = encoder_publish.omni_teleop:main',
+            'omni_nav2_bridge = encoder_publish.omni_nav2_bridge:main'
         ],
     },
 )

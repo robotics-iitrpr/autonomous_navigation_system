@@ -8,7 +8,7 @@ import math
 # Distance from robot center to wheel (meters)
 L = 0.136  # was cm, now in meters
 # Speed scaling factor from m/s to your motor command units
-SPEED = 20
+SPEED = 300
 ROT_SCALE = 0.1
 
 class OmniNav2Bridge(Node):
@@ -24,8 +24,8 @@ class OmniNav2Bridge(Node):
         self.get_logger().info("Omni Nav2 Bridge started — listening to /cmd_vel")
 
     def cmd_vel_callback(self, msg: Twist):
-        vx = msg.linear.x      # forward/back (m/s)
-        vy = msg.linear.y      # left/right (m/s)
+        vx = -msg.linear.x      # forward/back (m/s)
+        vy = -msg.linear.y      # left/right (m/s)
         omega = msg.angular.z  # rotation (rad/s)
 
         # Kinematic transformation for 3-wheel omni
