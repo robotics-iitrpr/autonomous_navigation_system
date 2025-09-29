@@ -51,6 +51,11 @@ slam_toolbox:
     loop_match_maximum_variance_coarse: 3.0  
     loop_match_minimum_response_coarse: 0.35    
     loop_match_minimum_response_fine: 0.45
+    optimization_period: 5.0  # in seconds (default is 10.0, lower = more frequent)
+    loop_closure_detection_frequency: 1.0  # in Hz
+    minimum_number_of_nodes: 3
+    map_publish_rate: 10.0  # Hz
+    publish_tf: true
 
     # Correlation Parameters - Correlation Parameters
     correlation_search_space_dimension: 0.5
