@@ -23,8 +23,6 @@ class OdometryPublisher(Node):
         self.last_time = self.get_clock().now()
         self.x = 0.0
         self.y = 0.0
-        self.initial_yaw_recorded = False
-        self.initial_yaw = 0.0
         self.yaw = 0.0  # from IMU
         self.imu_angular_velocity_z = 0.0  # initialize variable
 
@@ -44,16 +42,9 @@ class OdometryPublisher(Node):
 
     def imu_callback(self, msg):
         quat = msg.orientation
-        if(not self.initial_yaw_recorded):
-           _, _, self.initial_yaw = tf_transformations.euler_from_quaternion([
-            quat.x, quat.y, quat.z, quat.w
-            ])
-           self.initial_yaw_recorded = True
-
         _, _, self.yaw = tf_transformations.euler_from_quaternion([
             quat.x, quat.y, quat.z, quat.w
         ])
-        self.yaw = self.yaw - self.initial_yaw
         self.imu_angular_velocity_z = msg.angular_velocity.z
 
     def get_encoder_speedA(self,msg):
@@ -84,9 +75,8 @@ class OdometryPublisher(Node):
         w3 = self.w3
 
         # Robot frame velocities (assuming wheels at 0°, 120°, 240°)
-        #ulta kar diya
-        Vy = (2/3) * self.r * (w1 - 0.5 * w2 - 0.5 * w3)
-        Vx = (1/math.sqrt(3)) * self.r * (w2 - w3)
+        Vx = (2/3) * self.r * (w1 - 0.5 * w2 - 0.5 * w3)
+        Vy = (1/math.sqrt(3)) * self.r * (w2 - w3)
         omega = self.imu_angular_velocity_z
 
         # If omega is significant, you might want to zero out Vx, Vy
@@ -112,8 +102,8 @@ class OdometryPublisher(Node):
         odom_msg.header.frame_id = "odom"
         odom_msg.child_frame_id = "base_footprint"
 
-        odom_msg.pose.pose.position.x = self.x
-        odom_msg.pose.pose.position.y = self.y
+        odom_msg.pose.pose.position.x = -self.x
+        odom_msg.pose.pose.position.y = -self.y
         
 
         q = tf_transformations.quaternion_from_euler(0, 0, self.yaw)
@@ -137,8 +127,8 @@ class OdometryPublisher(Node):
         odom_tf.header.stamp = self.get_clock().now().to_msg()
         odom_tf.header.frame_id = "odom"
         odom_tf.child_frame_id = "base_footprint"
-        odom_tf.transform.translation.x = self.x
-        odom_tf.transform.translation.y = self.y
+        odom_tf.transform.translation.x = -self.x
+        odom_tf.transform.translation.y = -self.y
         odom_tf.transform.translation.z = 0.0
         odom_tf.transform.rotation = orientation
         self.odom_broadcaster.sendTransform(odom_tf)
@@ -169,12 +159,11 @@ class OdometryPublisher(Node):
         static_tf.transform.translation.y = 0.0
         static_tf.transform.translation.z = 0.1  # laser 10 cm above base
 
-        q = tf_transformations.quaternion_from_euler(math.radians(0), 0, math.radians(0))
-
-        static_tf.transform.rotation.x = q[0]
-        static_tf.transform.rotation.y = q[1]
-        static_tf.transform.rotation.z = q[2]
-        static_tf.transform.rotation.w = q[3]
+        # No rotation
+        static_tf.transform.rotation.x = 0.0
+        static_tf.transform.rotation.y = 0.0
+        static_tf.transform.rotation.z = 0.0
+        static_tf.transform.rotation.w = 1.0
 
         # Send it
         self.tf_broadcaster.sendTransform(static_tf)

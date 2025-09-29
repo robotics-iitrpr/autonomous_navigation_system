@@ -43,7 +43,7 @@ class EncoderListenerNode(Node):
         self.first_readingC = True
         
         # Motor/encoder specifications (adjust these values for your setup)
-        self.encoder_ppr = 280  # Pulses per revolution (change to your encoder's PPR)
+        self.encoder_ppr = 450  # Pulses per revolution (change to your encoder's PPR)
 
     def listener_callbackA(self, msg):
         current_time = time.time()

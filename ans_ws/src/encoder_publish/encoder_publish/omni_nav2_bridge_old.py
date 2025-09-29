@@ -6,7 +6,8 @@ from geometry_msgs.msg import Twist
 import math
 
 # Distance from robot center to wheel (meters)
-SCALE = (30/math.pi)*5  # base motor command speed
+SCALE = (30/math.pi)*1.275  # base motor command speed
+SPEED = 1.5
 
 def inverse_kinematics(Vx, Vy, omega, r, L):
     # Common terms
@@ -45,9 +46,9 @@ class OmniNav2Bridge(Node):
         mB = int(wB * SCALE)
         mC = int(wC * SCALE)
 
-        # self.get_logger().info(f"mA : {mA}. mB : {mB}, mC : {mC}")
+        self.get_logger().info(f"mA : {mA}. mB : {mB}, mC : {mC}")
 
-        self.send_motor_cmds(mA, mB, mC)
+        # self.send_motor_cmds(mA, mB, mC)
 
     def send_motor_cmds(self, mA, mB, mC):
         def cmd_str(val):

@@ -84,9 +84,8 @@ class OdometryPublisher(Node):
         w3 = self.w3
 
         # Robot frame velocities (assuming wheels at 0°, 120°, 240°)
-        #ulta kar diya
-        Vy = (2/3) * self.r * (w1 - 0.5 * w2 - 0.5 * w3)
-        Vx = (1/math.sqrt(3)) * self.r * (w2 - w3)
+        Vx = (2/3) * self.r * (w1 - 0.5 * w2 - 0.5 * w3)
+        Vy = (1/math.sqrt(3)) * self.r * (w2 - w3)
         omega = self.imu_angular_velocity_z
 
         # If omega is significant, you might want to zero out Vx, Vy
@@ -169,12 +168,11 @@ class OdometryPublisher(Node):
         static_tf.transform.translation.y = 0.0
         static_tf.transform.translation.z = 0.1  # laser 10 cm above base
 
-        q = tf_transformations.quaternion_from_euler(math.radians(0), 0, math.radians(0))
-
-        static_tf.transform.rotation.x = q[0]
-        static_tf.transform.rotation.y = q[1]
-        static_tf.transform.rotation.z = q[2]
-        static_tf.transform.rotation.w = q[3]
+        # No rotation
+        static_tf.transform.rotation.x = 0.0
+        static_tf.transform.rotation.y = 0.0
+        static_tf.transform.rotation.z = 0.0
+        static_tf.transform.rotation.w = 1.0
 
         # Send it
         self.tf_broadcaster.sendTransform(static_tf)

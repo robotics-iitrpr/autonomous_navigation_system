@@ -6,23 +6,11 @@ import sys, termios, tty, select
 import math
 import time
 
-def inverse_kinematics(Vx, Vy, omega, r, L):
-    # Common terms
-    sqrt3 = math.sqrt(3)
-
-    # Inverse kinematics equations
-    w1 = (1 / r) * (L * omega + Vy)
-    w2 = (1 / r) * (L * omega - 0.5 * Vy - (sqrt3 / 2) * Vx)
-    w3 = (1 / r) * (L * omega - 0.5 * Vy + (sqrt3 / 2) * Vx)
-
-    return w1, w2, w3
-
-
-
 # Distance from robot center to wheel (cm)
+L = 13.6
 # Speed scaling
-SCALE = 1.275  # base motor command speed
-SPEED = 1.5
+SPEED = 50  # base motor command speed
+ROT_SCALE = 0.1
 
 def get_key(timeout=0.05):
     """Non-blocking key read."""
@@ -36,8 +24,6 @@ class OmniTeleopNode(Node):
         super().__init__('omni_teleop_continuous')
 
         self.last_motor_commands = (0,0,0)
-        self.r = 0.052  # Wheel radius = 5.2 cm
-        self.L = 0.136   # Distance from center to wheel = 13.6 cm
 
         self.pubA = self.create_publisher(String, '/motor_command_A', 10)
         self.pubB = self.create_publisher(String, '/motor_command_B', 10)
@@ -67,27 +53,31 @@ class OmniTeleopNode(Node):
                     vx, vy, omega = 0.0, 0.0, 0.0
 
                     if key == 'w':
-                        vx = SPEED
+                        vx = 1.0
                     elif key == 's':
-                        vx = -SPEED
+                        vx = -1.0
                     elif key == 'a':
-                        vy = SPEED
+                        vy = 1.0
                     elif key == 'd':
-                        vy = -SPEED
+                        vy = -1.0
                     elif key == 'q':
-                        omega = 10.0
+                        omega = 1.0
                     elif key == 'e':
-                        omega = -10.0
+                        omega = -1.0
                     elif key == '\x03':  # Ctrl+C
                         break
 
-                    (wA,wB,wC) = inverse_kinematics(vx,vy,omega,self.r,self.L)
+                    # self.stopped = False
 
-                    mA = int(wA * SCALE)
-                    mB = int(wB * SCALE)
-                    mC = int(wC * SCALE)
+                    # Calculate wheel speeds
+                    # Calculate wheel speeds with rotation scaled
+                    wA = vx - (vy / math.sqrt(3)) - (L * omega * ROT_SCALE)
+                    wB = -vx - (vy / math.sqrt(3)) - (L * omega * ROT_SCALE)
+                    wC = (2 * vy / math.sqrt(3)) - (L * omega * ROT_SCALE)
 
-                    # self.get_logger().info(f"mA : {mA}. mB : {mB}, mC : {mC}")
+                    mA = int(wA * SPEED)
+                    mB = int(wB * SPEED)
+                    mC = int(wC * SPEED)
 
 
                     if(self.last_motor_commands != (mA,mB,mC)):

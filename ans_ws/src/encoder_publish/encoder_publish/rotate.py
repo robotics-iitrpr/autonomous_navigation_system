@@ -33,9 +33,9 @@ class MotorCommandPublisher(Node):
             self.get_logger().info('Publishing F0 to all motors (once)')
 
             # Publish F0 once, then shut down the node
-            self.publisher_A.publish(msg)
+            # self.publisher_A.publish(msg)
             self.publisher_B.publish(msg)
-            self.publisher_C.publish(msg)
+            # self.publisher_C.publish(msg)
 
             # Stop the timer to prevent further publishing
             self.timer.cancel()
@@ -43,9 +43,9 @@ class MotorCommandPublisher(Node):
             return
 
         # Publish F20 during first 5 seconds
-        self.publisher_A.publish(msg)
+        # self.publisher_A.publish(msg)
         self.publisher_B.publish(msg)
-        self.publisher_C.publish(msg)
+        # self.publisher_C.publish(msg)
 
 def main(args=None):
     rclpy.init(args=args)

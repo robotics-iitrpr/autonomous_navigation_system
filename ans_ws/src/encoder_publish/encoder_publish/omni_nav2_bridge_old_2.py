@@ -6,18 +6,10 @@ from geometry_msgs.msg import Twist
 import math
 
 # Distance from robot center to wheel (meters)
-SCALE = (30/math.pi)*5  # base motor command speed
-
-def inverse_kinematics(Vx, Vy, omega, r, L):
-    # Common terms
-    sqrt3 = math.sqrt(3)
-
-    # Inverse kinematics equations
-    w1 = (1 / r) * (L * omega + Vy)
-    w2 = (1 / r) * (L * omega - 0.5 * Vy - (sqrt3 / 2) * Vx)
-    w3 = (1 / r) * (L * omega - 0.5 * Vy + (sqrt3 / 2) * Vx)
-
-    return w1, w2, w3
+L = 13.6  # was cm, now in meters
+# Speed scaling factor from m/s to your motor command units
+SPEED = 10
+ROT_SCALE = 0.1
 
 class OmniNav2Bridge(Node):
     def __init__(self):
@@ -31,21 +23,14 @@ class OmniNav2Bridge(Node):
 
         self.get_logger().info("Omni Nav2 Bridge started — listening to /cmd_vel")
 
-        self.r = 0.052  # Wheel radius = 5.2 cm
-        self.L = 0.136   # Distance from center to wheel = 13.6 cm
-
     def cmd_vel_callback(self, msg: Twist):
-        vx = msg.linear.x
-        vy = msg.linear.y
-        omega = msg.angular.z
+        vx = -msg.linear.x    # forward/back (m/s)
+        vy = -msg.linear.y    # left/right (m/s)
+        omega = -msg.angular.z # rotation (rad/s)
 
-        (wA,wB,wC) = inverse_kinematics(vx,vy,omega,self.r,self.L)
+        [mB,mA,mC] = self.cmd_vel_to_motors(vx,vy,omega)
 
-        mA = int(wA * SCALE)
-        mB = int(wB * SCALE)
-        mC = int(wC * SCALE)
-
-        # self.get_logger().info(f"mA : {mA}. mB : {mB}, mC : {mC}")
+        # self.get_logger().info(f"ma:{mA} , mb:{mB}, mc:{mC}")
 
         self.send_motor_cmds(mA, mB, mC)
 
@@ -65,6 +50,27 @@ class OmniNav2Bridge(Node):
         self.pubA.publish(msgA)
         self.pubB.publish(msgB)
         self.pubC.publish(msgC)
+    
+    def cmd_vel_to_motors(self,vx, vy, omega, L=0.136, R=0.052):
+        # Angles of wheels in radians (A=0°, B=120°, C=240°)
+        theta = [0, 2*math.pi/3, 4*math.pi/3]  # 0, 120, 240 degrees
+
+        # Calculate wheel speeds (rad/s)
+        wheel_speeds = []
+        for angle in theta:
+            v_i = vx * math.sin(angle) - vy * math.cos(angle) + omega * L
+            omega_i = v_i / R  # rad/s
+            wheel_speeds.append(omega_i)
+
+        # Normalize wheel speeds to -255 to 255 (motor command range)
+        max_speed = max(abs(speed) for speed in wheel_speeds)
+        if max_speed > 0:
+            scale = 25 / max_speed
+            wheel_cmds = [int(speed * scale) for speed in wheel_speeds]
+        else:
+            wheel_cmds = [0, 0, 0]
+
+        return wheel_cmds
 
 def main(args=None):
     rclpy.init(args=args)
